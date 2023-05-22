@@ -344,5 +344,29 @@ Proof.
       + reflexivity.
   Qed.
 
-(* Till here*)
+Theorem andb_true_elim2 : forall b c : bool,
+  andb b c = true -> c = true.
+Proof.
+intros b c.
+destruct b.
+- simpl. intros H. rewrite H. reflexivity.
+- simpl. destruct c.
+  + intros H2. reflexivity.
+  + intros H3. rewrite H3. reflexivity.
+Qed.
 
+
+Theorem andb_true_elim2_alternate : forall b c : bool,
+  andb b c = true -> c = true.
+Proof.
+intros b c.
+destruct b.
+- simpl. intros H. rewrite H. reflexivity.
+- simpl. intros H2. rewrite <- H2. destruct c.
+  + rewrite H2. reflexivity.
+  + reflexivity.
+Qed.
+
+
+
+(* Till here*)
