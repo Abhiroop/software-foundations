@@ -335,11 +335,11 @@ Qed.
 Theorem andb_commutative: forall a b: bool,
   a && b = b && a.
 Proof.
-  intros a b. destruct a.
-    - destruct b.
+  intros a b. destruct a eqn:Ea.
+    - destruct b eqn:Eb.
       + reflexivity.
       + reflexivity.
-    - destruct b.
+    - destruct b eqn:Eb.
       + reflexivity.
       + reflexivity.
   Qed.
@@ -348,13 +348,12 @@ Theorem andb_true_elim2 : forall b c : bool,
   andb b c = true -> c = true.
 Proof.
 intros b c.
-destruct b.
-- simpl. intros H. rewrite H. reflexivity.
-- simpl. destruct c.
-  + intros H2. reflexivity.
-  + intros H3. rewrite H3. reflexivity.
+destruct b eqn:Eb.
+-simpl. intros H. rewrite H. reflexivity.
+-simpl. destruct c eqn:Ec.
+        + intros H. reflexivity.
+        + intros H. rewrite H. reflexivity.
 Qed.
-
 
 Theorem andb_true_elim2_alternate : forall b c : bool,
   andb b c = true -> c = true.
@@ -369,4 +368,45 @@ Qed.
 
 
 
-(* Till here*)
+
+(*
+Theorem andb_true_elim2_another : forall b c: bool,
+   (b && c) = true -> c = true.
+Proof.
+  intros [] [].
+  intros H.
+  - reflexivity.
+  - simpl. intros. rewrite -> H. reflexivity.
+  - simpl. intros. reflexivity.
+  - simpl. intros. rewrite -> H. reflexivity.
+Qed.
+*)
+
+Theorem plus_1_neq_0: forall n : nat,
+  (n + 1) =? 0 = false.
+Proof.
+  intros[|n].
+  - reflexivity.
+  - reflexivity.
+ Qed.
+
+Theorem andb_commutative'' :
+  forall b c, andb b c = andb c b.
+Proof.
+intros [] [].
+- reflexivity.
+- reflexivity.
+- reflexivity.
+- reflexivity.
+Qed.
+
+Theorem zero_nbeq_plus_1 : forall n : nat,
+  0 =? (n + 1) = false.
+Proof.
+intros [|n].
+- reflexivity.
+- reflexivity.
+Qed.
+
+
+(* Till Here*) 
