@@ -612,7 +612,33 @@ Proof. reflexivity. Qed.
 Theorem lower_grade_F_Minus : lower_grade (Grade F Minus) = (Grade F Minus).
 Proof. reflexivity. Qed.
 
-(* Till Here*) 
+Theorem lower_grade_lowers :
+  forall (g : grade),
+    grade_comparison (Grade F Minus) g = Lt ->
+    grade_comparison (lower_grade g) g = Lt.
+Proof.
+intros.
+destruct g.
+rewrite <- H.
+destruct m.
+- destruct l.
+  + reflexivity.
+  + reflexivity.
+  + reflexivity.
+  + reflexivity.
+  + reflexivity.
+- destruct l.
+  + reflexivity.
+  + reflexivity.
+  + reflexivity.
+  + reflexivity.
+  + reflexivity.
+- destruct l.
+  + reflexivity.
+  + reflexivity.
+  + reflexivity.
+  + reflexivity.
+  + reflexivity.
+Qed.
 
 End LateDays.
-
