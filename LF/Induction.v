@@ -42,3 +42,12 @@ induction n.
 - simpl. rewrite add_0_r. reflexivity.
 - simpl. rewrite IHn. rewrite plus_n_Sm. reflexivity.
 Qed.
+
+Theorem add_assoc : forall n m p : nat,
+  n + (m + p) = (n + m) + p.
+Proof.
+intros n. intros m. intros p.
+induction n.
+- simpl. reflexivity.
+- simpl. rewrite IHn. reflexivity.
+Qed.
