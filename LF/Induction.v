@@ -29,6 +29,16 @@ Proof.
 intros n.
 intros m.
 induction n.
-- reflexivity.
+- simpl. reflexivity.
 - simpl. rewrite IHn. reflexivity.
+Qed.
+
+Theorem add_comm : forall n m : nat,
+  n + m = m + n.
+Proof.
+intros n.
+intros m.
+induction n.
+- simpl. rewrite add_0_r. reflexivity.
+- simpl. rewrite IHn. rewrite plus_n_Sm. reflexivity.
 Qed.
