@@ -61,6 +61,9 @@ Proof. simpl. reflexivity. Qed.
 Example test_orb4: (orb true true) = true.
 Proof. simpl. reflexivity. Qed.
 
+
+Notation "x && y" := (andb x y).
+
 Infix "&&" := andb.
 Infix "||" := orb.
 
@@ -105,6 +108,7 @@ Proof. simpl. reflexivity. Qed.
 
 Check true.
 Check negb.
+Check (negb true).
 
 
 Module Playground1.
@@ -122,6 +126,8 @@ Definition pred (n:nat) : nat :=
 End Playground1.
 
 Check (S (S O)).
+
+Check (S (S (S O))).
 
 Compute (pred (O)).
 
@@ -269,7 +275,7 @@ Proof.
 
 Theorem mult_O_l: forall n : nat, O * n = O.
 Proof.
-  intros n. simpl. reflexivity. Qed.
+  intros n. reflexivity. Qed.
 
 Theorem plud_id_example : forall n m : nat,
   n = m ->
@@ -277,7 +283,7 @@ Theorem plud_id_example : forall n m : nat,
 Proof.
 intros n m.
 intros H.
-rewrite <- H.
+rewrite -> H.
 reflexivity.
 Qed.
 
@@ -285,10 +291,10 @@ Theorem plus_id_exercise : forall n m o : nat,
   n = m -> m = o -> n + m = m + o.
 Proof.
 intros n m o.
-intros H.
+intros H1.
 intros H2.
-rewrite H.
-rewrite H2.
+rewrite H1.
+rewrite <- H2.
 reflexivity.
 Qed.
 
@@ -308,10 +314,8 @@ Theorem mult_n_1 : forall p : nat,
   p * 1 = p.
 Proof.
 intros p.
-Check mult_n_Sm.
 rewrite <- mult_n_Sm.
 rewrite <- mult_n_O.
-simpl.
 reflexivity.
 Qed.
 
@@ -349,10 +353,10 @@ Theorem andb_true_elim2 : forall b c : bool,
 Proof.
 intros b c.
 destruct b eqn:Eb.
--simpl. intros H. rewrite H. reflexivity.
--simpl. destruct c eqn:Ec.
-        + intros H. reflexivity.
-        + intros H. rewrite H. reflexivity.
+- simpl. intros H. rewrite H. reflexivity.
+- simpl. destruct c eqn:Ec.
+  + reflexivity.
+  + intros H2. rewrite H2. reflexivity.
 Qed.
 
 Theorem andb_true_elim2_alternate : forall b c : bool,
@@ -403,7 +407,7 @@ Qed.
 Theorem zero_nbeq_plus_1 : forall n : nat,
   0 =? (n + 1) = false.
 Proof.
-intros [|n].
+intros n. destruct n.
 - reflexivity.
 - reflexivity.
 Qed.
@@ -420,17 +424,33 @@ Fixpoint plus' (n : nat) (m : nat) : nat :=
 (* Fixpoint break_termination_checker (n:nat) : nat := 
   mult (break_termination_checker n) 0.  *)
 
+
 Theorem identity_fn_applied_twice :
   forall (f : bool -> bool), (forall (x : bool), f x = x) ->
     forall (b : bool), f (f b) = b.
 Proof.
-intros.
-destruct b.
-- rewrite H. rewrite H. reflexivity.
-- rewrite H. rewrite H. reflexivity.
+intros f. 
+intros H.
+intros b.
+rewrite H. rewrite H. reflexivity.
 Qed.
 
+
 Theorem negation_fn_applied_twice :
+  forall (f : bool -> bool), (forall (x : bool), f x = negb x) ->
+    forall (b : bool), f (f b) = b.
+Proof.
+intros f.
+intros H.
+intros b.
+rewrite H. rewrite H. 
+destruct b.
+- reflexivity.
+- reflexivity.
+Qed.
+
+
+Theorem negation_fn_applied_twice' :
   forall (f : bool -> bool), (forall (x : bool), f x = negb x) ->
     forall (b : bool), f (f b) = b.
 Proof.
@@ -441,6 +461,21 @@ destruct b.
 Qed.
 
 Theorem andb_eq_orb :
+  forall (b c : bool),
+  (andb b c = orb b c) -> b = c.
+Proof.
+intros b c.
+destruct b.
+destruct c.
+- simpl. reflexivity.
+- simpl. intros H. rewrite H. reflexivity.
+- simpl. destruct c.
+  + intros H. rewrite H. reflexivity.
+  + reflexivity.
+Qed.
+
+
+Theorem andb_eq_orb' :
   forall (b c : bool),
   (andb b c = orb b c) -> b = c.
 Proof.
