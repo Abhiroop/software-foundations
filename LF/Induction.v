@@ -2,7 +2,8 @@ From LF Require Export Basics.
 
 Theorem add_0_r : forall n : nat, n + 0 = n.
 Proof.
-intros n. induction n  as [| n' IHn'].
+intros.
+induction n as [|n' IHn'].
 - reflexivity.
 - simpl. rewrite -> IHn'. reflexivity.
 Qed.
@@ -15,21 +16,22 @@ intros n. induction n as [|n' IHn'].
 - simpl. rewrite IHn'. reflexivity.
 Qed.
 
-Theorem mul_0_r : forall n:nat,
-  n * 0 = 0.
+Theorem mul_0_r : forall n : nat, n * 0 = 0.
 Proof.
+intros.
 induction n.
 - reflexivity.
-- simpl. rewrite IHn. reflexivity.
+- simpl. rewrite -> IHn. reflexivity.
 Qed.
+
 
 Theorem plus_n_Sm : forall n m : nat,
   S (n + m) = n + (S m).
 Proof.
 intros.
-induction n.
+induction n as [|n' IHn'].
 - simpl. reflexivity.
-- simpl. rewrite IHn. reflexivity.
+- simpl. rewrite IHn'. reflexivity.
 Qed.
 
 Theorem add_comm : forall n m : nat,
@@ -81,9 +83,9 @@ Fixpoint evenb (n:nat) : bool :=
 
 Lemma bool_id : forall b : bool, negb (negb b) = b.
 Proof.
-induction b.
-- simpl. reflexivity.
-- simpl. reflexivity.
+intros b. destruct b.
+- reflexivity.
+- reflexivity.
 Qed.
 
 Theorem even_S : forall n : nat, evenb (S n) = negb (evenb n).
@@ -132,6 +134,7 @@ simpl.
 reflexivity.
 Qed.
 
+
 Lemma mul_add_distr : forall m k : nat,
    m * (1 + k) = m * 1 + m * k.
 Proof.
@@ -146,7 +149,6 @@ induction m.
   rewrite H. reflexivity.
 Qed.
 
-
 Theorem mul_comm : forall m n : nat, m * n  = n * m.
 Proof.
 intros m n. 
@@ -154,5 +156,24 @@ induction n.
 - simpl. rewrite mul_0_r. reflexivity.
 - simpl. rewrite mul_add_distr. rewrite mult_n_1. rewrite IHn. reflexivity.
 Qed.
+
+Check leb.
+
+Lemma plus_0_l : forall n : nat,
+  0 + n = n.
+Proof. reflexivity. Qed.
+
+Theorem plus_leb_compat_l : forall n m p : nat,
+  n <=? m = true -> (p + n) <=? (p + m) = true.
+Proof.
+intros n m p.
+intros H.
+induction p.
+- repeat rewrite plus_0_l. rewrite H. reflexivity.
+- simpl. rewrite IHp. reflexivity.
+Qed.
+
+ 
+
 
 
