@@ -173,7 +173,89 @@ induction p.
 - simpl. rewrite IHp. reflexivity.
 Qed.
 
- 
+Theorem all3_spec : forall b c : bool,
+  orb
+    (andb b c)
+    (orb (negb b)
+         (negb c))
+  = true.
+Proof.
+intros.
+destruct b.
+destruct c.
+- reflexivity.
+- reflexivity.
+- reflexivity.
+Qed.
 
+Theorem add_shuffle3' : forall n m p : nat,
+  n + (m + p) = m + (n + p).
+Proof.
+intros.
+repeat rewrite add_assoc.
+replace (n + m) with (m + n).
+- reflexivity.
+- rewrite add_comm. reflexivity.
+Qed.
+
+Inductive bin : Type :=
+  | Z
+  | B0 (n : bin)
+  | B1 (n : bin).
+
+
+Fixpoint incr (m:bin) : bin :=
+  match m with
+  | Z => B1 Z 
+  | B0 x => B1 x
+  | B1 x => B0 (incr x)
+  end.
+
+Compute (incr (B0 Z)).
+Compute (incr Z).
+Compute (incr (B1 Z)).
+Compute (incr (B0 (B1 Z))). 
+Compute (incr (B1 (B1 Z))).
+Compute (incr (B0 (B0 (B1 Z)))).
+
+
+Fixpoint bin_to_nat (m:bin) : nat :=
+  match m with
+  | Z => O
+  | B0 x => double (bin_to_nat x)
+  | B1 x => S (double (bin_to_nat x))
+  end.
+
+Compute (bin_to_nat (B0 Z)).
+Compute (bin_to_nat Z).
+Compute (bin_to_nat (B1 Z)).
+Compute (bin_to_nat (B0 (B1 Z))). 
+Compute (bin_to_nat (B1 (B1 Z))).
+Compute (bin_to_nat (B0 (B0 (B1 Z)))).
+
+Theorem bin_to_nat_pres_incr : forall b : bin,
+  bin_to_nat (incr b) = 1 + bin_to_nat b.
+Proof.
+intros.
+simpl.
+induction b.
+- simpl. reflexivity.
+- simpl. reflexivity.
+- simpl. rewrite IHb. simpl. reflexivity.
+Qed.
+
+Fixpoint nat_to_bin (n:nat) : bin :=
+  match n with
+  | O => Z
+  | S n' => incr (nat_to_bin n')
+  end.
+
+Theorem nat_bin_nat : forall n, bin_to_nat (nat_to_bin n) = n.
+Proof.
+intros.
+induction n.
+- reflexivity.
+- simpl. rewrite bin_to_nat_pres_incr. rewrite IHn. reflexivity.
+Qed.
 
 
